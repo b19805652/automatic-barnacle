@@ -80,6 +80,7 @@ services:
       - OD_PORT=7456
       - OD_BIND_HOST=0.0.0.0
       - OD_DISABLE_API_AUTH=1
+      - OD_WEB_PORT=${OPENDESIGN_PORT:-43000}
       - NODE_ENV=production
       - HOME=/home/node
     volumes:
