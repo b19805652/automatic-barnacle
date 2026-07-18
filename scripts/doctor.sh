@@ -68,7 +68,7 @@ fi
 
 # 4. Check Host Port Availability (if .env is available)
 if [ -f .env ]; then
-  ports_to_check=("OMNIROUTE_PORT" "OPENDESIGN_PORT")
+  ports_to_check=("OMNIROUTE_PORT" "OPENDESIGN_PORT" "VSCODE_PORT")
   for port_var in "${ports_to_check[@]}"; do
     port_val="${!port_var:-}"
     if [ -n "$port_val" ]; then
@@ -170,6 +170,27 @@ if docker compose ps -q opendesign &>/dev/null; then
   else
     report_result "OpenDesign Tool Check" "WARN" "opendesign container is not running."
   fi
+fi
+
+# 9. Check VS Code Server CLI tools status
+if docker compose ps -q vscode &>/dev/null; then
+  vscode_status=$(docker inspect -f '{{.State.Status}}' "$(docker compose ps -q vscode)" 2>/dev/null || echo "stopped")
+  if [ "$vscode_status" = "running" ]; then
+    if docker compose exec -T vscode which claude &>/dev/null; then
+      report_result "Claude Code inside VS Code" "OK" "VS Code can locate claude."
+    else
+      report_result "Claude Code inside VS Code" "FAIL" "VS Code cannot locate claude."
+    fi
+    if docker compose exec -T vscode which agy &>/dev/null; then
+      report_result "Antigravity CLI inside VS Code" "OK" "VS Code can locate agy."
+    else
+      report_result "Antigravity CLI inside VS Code" "FAIL" "VS Code cannot locate agy."
+    fi
+  else
+    report_result "VS Code Tool Check" "WARN" "vscode container is not running."
+  fi
+else
+  report_result "VS Code Tool Check" "WARN" "vscode container is not defined."
 fi
 
 # Summary

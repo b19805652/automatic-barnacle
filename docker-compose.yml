@@ -92,6 +92,32 @@ services:
     networks:
       - ai-platform-net
 
+  # VS Code Server Web Editor (Developer Extension)
+  vscode:
+    build:
+      context: ./vscode
+      dockerfile: Dockerfile
+      network: host
+    container_name: ai-vscode
+    restart: unless-stopped
+    ports:
+      - "${VSCODE_PORT:-44000}:8080"
+    environment:
+      - PASSWORD=${VSCODE_PASSWORD:-password}
+      - HOME=/home/node
+    volumes:
+      # Developer workspace
+      - ${WORKSPACE_PATH:-./shared/workspace}:/workspace
+      # Shared credentials
+      - ${CLAUDE_CONFIG_PATH:-./shared/claude}:/home/node/.claude
+      - ${ANTIGRAVITY_CONFIG_PATH:-./shared/antigravity}:/home/node/.config/antigravity
+      - ${NPM_CACHE_PATH:-./shared/npm}:/home/node/.npm
+      - ${GENERAL_CACHE_PATH:-./shared/cache}:/home/node/.cache
+      - ${SSH_PATH:-./shared/ssh}:/home/node/.ssh
+      - ${SHARED_CONFIG_PATH:-./shared/config}:/home/node/.config
+    networks:
+      - ai-platform-net
+
 networks:
   ai-platform-net:
     name: ai-platform-net
