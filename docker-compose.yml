@@ -22,7 +22,7 @@ services:
       # Developer workspace
       - ${WORKSPACE_PATH:-./shared/workspace}:/workspace
       # Shared authentication stores
-      - ${CLAUDE_CONFIG_PATH:-./shared/claude}:/home/node/.config/claude-code
+      - ${CLAUDE_CONFIG_PATH:-./shared/claude}:/home/node/.claude
       - ${ANTIGRAVITY_CONFIG_PATH:-./shared/antigravity}:/home/node/.config/antigravity
       # Cache and package stores to avoid re-downloads
       - ${NPM_CACHE_PATH:-./shared/npm}:/home/node/.npm

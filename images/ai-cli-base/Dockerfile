@@ -56,6 +56,11 @@ COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY healthcheck.sh /usr/local/bin/healthcheck.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/healthcheck.sh
 
+# Create .claude folder skeleton and symlink ~/.claude.json -> ~/.claude/.claude.json
+RUN mkdir -p /home/node/.claude && \
+    ln -sf /home/node/.claude/.claude.json /home/node/.claude.json && \
+    chown -R node:node /home/node
+
 # Change default directory and user
 WORKDIR /workspace
 USER node

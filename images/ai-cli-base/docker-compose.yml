@@ -19,7 +19,7 @@ services:
       - HOME=/home/node
     volumes:
       - ../../shared/workspace:/workspace
-      - ../../shared/claude:/home/node/.config/claude-code
+      - ../../shared/claude:/home/node/.claude
       - ../../shared/antigravity:/home/node/.config/antigravity
       - ../../shared/npm:/home/node/.npm
       - ../../shared/cache:/home/node/.cache

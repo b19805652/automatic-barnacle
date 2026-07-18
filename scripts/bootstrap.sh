@@ -45,5 +45,21 @@ else
   echo "USER_GID=${HOST_GID}" >> .env
 fi
 
+# 4. Synchronize host credentials if present
+echo "Checking for host credentials to synchronize..."
+HOST_CLAUDE_DIR="$HOME/.claude"
+HOST_CLAUDE_JSON="$HOME/.claude.json"
+
+if [ -d "$HOST_CLAUDE_DIR" ]; then
+  echo "Syncing Claude credentials from host $HOST_CLAUDE_DIR..."
+  # Copy all content, preserving structure but ensuring writeable
+  cp -r "$HOST_CLAUDE_DIR"/* shared/claude/ 2>/dev/null || true
+fi
+
+if [ -f "$HOST_CLAUDE_JSON" ]; then
+  echo "Syncing Claude MCP configuration from host $HOST_CLAUDE_JSON..."
+  cp "$HOST_CLAUDE_JSON" shared/claude/.claude.json
+fi
+
 echo "Permissions synced in .env: USER_UID=${HOST_UID}, USER_GID=${HOST_GID}"
 echo "Bootstrap complete! You can now run 'make build' and 'make up'."
