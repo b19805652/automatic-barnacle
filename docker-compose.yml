@@ -1,0 +1,68 @@
+services:
+  # Core runtime and CLI toolbox
+  ai-cli-base:
+    build:
+      context: ./images/ai-cli-base
+      dockerfile: Dockerfile
+      network: host
+      args:
+        USER_UID: ${USER_UID:-1000}
+        USER_GID: ${USER_GID:-1000}
+    container_name: ai-cli-base
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    user: "${USER_UID:-1000}:${USER_GID:-1000}"
+    environment:
+      - USER_UID=${USER_UID:-1000}
+      - USER_GID=${USER_GID:-1000}
+      - HOME=/home/node
+    volumes:
+      # Developer workspace
+      - ${WORKSPACE_PATH:-./shared/workspace}:/workspace
+      # Shared authentication stores
+      - ${CLAUDE_CONFIG_PATH:-./shared/claude}:/home/node/.config/claude-code
+      - ${ANTIGRAVITY_CONFIG_PATH:-./shared/antigravity}:/home/node/.config/antigravity
+      # Cache and package stores to avoid re-downloads
+      - ${NPM_CACHE_PATH:-./shared/npm}:/home/node/.npm
+      - ${GENERAL_CACHE_PATH:-./shared/cache}:/home/node/.cache
+      - ${SSH_PATH:-./shared/ssh}:/home/node/.ssh:ro
+      - ${SHARED_CONFIG_PATH:-./shared/config}:/home/node/.config/shared
+    working_dir: /workspace
+    networks:
+      - ai-platform-net
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  # OmniRoute Wrapper Stub (Milestone 4 placeholder)
+  omniroute:
+    image: nginx:alpine
+    container_name: ai-omniroute
+    restart: unless-stopped
+    ports:
+      - "${OMNIROUTE_PORT:-8080}:80"
+    volumes:
+      - ${WORKSPACE_PATH:-./shared/workspace}:/workspace
+    networks:
+      - ai-platform-net
+
+  # OpenDesign Wrapper Stub (Milestone 5 placeholder)
+  opendesign:
+    image: nginx:alpine
+    container_name: ai-opendesign
+    restart: unless-stopped
+    ports:
+      - "${OPENDESIGN_PORT:-3000}:80"
+    volumes:
+      - ${WORKSPACE_PATH:-./shared/workspace}:/workspace
+    networks:
+      - ai-platform-net
+
+networks:
+  ai-platform-net:
+    name: ai-platform-net
+    driver: bridge

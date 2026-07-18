@@ -1,0 +1,31 @@
+# Environments
+.env
+
+# Shared directories runtime data (preserve directory structures with .gitkeep)
+shared/claude/*
+!shared/claude/.gitkeep
+
+shared/antigravity/*
+!shared/antigravity/.gitkeep
+
+shared/workspace/*
+!shared/workspace/.gitkeep
+
+shared/npm/*
+!shared/npm/.gitkeep
+
+shared/cache/*
+!shared/cache/.gitkeep
+
+shared/ssh/*
+!shared/ssh/.gitkeep
+
+shared/config/*
+!shared/config/.gitkeep
+
+# IDE & system configs
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
