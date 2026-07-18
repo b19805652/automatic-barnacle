@@ -30,6 +30,11 @@ RUN if [ "$USER_GID" != "1000" ] || [ "$USER_UID" != "1000" ]; then \
 ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 ENV PATH=$PATH:/home/node/.npm-global/bin
 
+RUN echo 'export NPM_CONFIG_PREFIX=/home/node/.npm-global' >> /home/node/.bashrc && \
+    echo 'export PATH=$PATH:/home/node/.npm-global/bin' >> /home/node/.bashrc && \
+    echo 'export NPM_CONFIG_PREFIX=/home/node/.npm-global' >> /home/node/.profile && \
+    echo 'export PATH=$PATH:/home/node/.npm-global/bin' >> /home/node/.profile
+
 # Dynamic Claude Code version argument
 ARG CLAUDE_CODE_VERSION=2.1.214
 
