@@ -29,3 +29,6 @@ shared/config/*
 .DS_Store
 Thumbs.db
 *.log
+
+# Scratch scripts/repos
+scratch/

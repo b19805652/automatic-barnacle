@@ -64,15 +64,31 @@ services:
     networks:
       - ai-platform-net
 
-  # OpenDesign Wrapper Stub (Milestone 5 placeholder)
+  # OpenDesign Wrapper Service (Milestone 5)
   opendesign:
-    image: nginx:alpine
+    build:
+      context: ./scratch/open-design-repo
+      dockerfile: ../../opendesign/Dockerfile
+      network: host
     container_name: ai-opendesign
     restart: unless-stopped
     ports:
-      - "${OPENDESIGN_PORT:-43000}:80"
+      - "${OPENDESIGN_PORT:-43000}:7456"
+    environment:
+      - OD_PORT=7456
+      - OD_BIND_HOST=0.0.0.0
+      - OD_DISABLE_API_AUTH=1
+      - NODE_ENV=production
+      - HOME=/home/node
     volumes:
+      # Developer workspace
       - ${WORKSPACE_PATH:-./shared/workspace}:/workspace
+      # Shared authentication stores
+      - ${CLAUDE_CONFIG_PATH:-./shared/claude}:/home/node/.claude
+      - ${ANTIGRAVITY_CONFIG_PATH:-./shared/antigravity}:/home/node/.config/antigravity
+      # Cache and package stores to avoid re-downloads
+      - ${NPM_CACHE_PATH:-./shared/npm}:/home/node/.npm
+      - ${GENERAL_CACHE_PATH:-./shared/cache}:/home/node/.cache
     networks:
       - ai-platform-net
 
