@@ -18,6 +18,7 @@ services:
       - USER_UID=${USER_UID:-1000}
       - USER_GID=${USER_GID:-1000}
       - HOME=/home/node
+      - ANTHROPIC_BASE_URL=http://omniroute:20128/v1
     volumes:
       # Developer workspace
       - ${WORKSPACE_PATH:-./shared/workspace}:/workspace
@@ -81,6 +82,7 @@ services:
       - OD_BIND_HOST=0.0.0.0
       - OD_DISABLE_API_AUTH=1
       - OD_WEB_PORT=${OPENDESIGN_PORT:-43000}
+      - OD_ALLOWED_INTERNAL_HOSTS=omniroute,ai-omniroute,localhost,127.0.0.1
       - NODE_ENV=production
       - HOME=/home/node
     volumes:
@@ -108,6 +110,7 @@ services:
     environment:
       - PASSWORD=${VSCODE_PASSWORD:-password}
       - HOME=/home/node
+      - ANTHROPIC_BASE_URL=http://omniroute:20128/v1
     volumes:
       # Developer workspace
       - ${WORKSPACE_PATH:-./shared/workspace}:/workspace
