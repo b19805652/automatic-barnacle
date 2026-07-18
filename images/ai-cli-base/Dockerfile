@@ -26,8 +26,16 @@ RUN if [ "$USER_GID" != "1000" ] || [ "$USER_UID" != "1000" ]; then \
     fi && \
     chown -R node:node /home/node
 
+# Configure global npm prefix in the node user home to avoid permissions issues at runtime
+ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
+ENV PATH=$PATH:/home/node/.npm-global/bin
+
+# Dynamic Claude Code version argument
+ARG CLAUDE_CODE_VERSION=2.1.214
+
 # Install Claude Code globally
-RUN npm install -g @anthropic-ai/claude-code@2.1.214
+RUN npm install -g @anthropic-ai/claude-code@$CLAUDE_CODE_VERSION && \
+    chown -R node:node /home/node
 
 # Install Antigravity CLI (agy) stub script
 RUN echo '#!/usr/bin/env sh\n\

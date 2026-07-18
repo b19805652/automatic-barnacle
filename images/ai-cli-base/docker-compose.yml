@@ -1,0 +1,27 @@
+services:
+  ai-cli-sandbox:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      network: host
+      args:
+        USER_UID: ${USER_UID:-1000}
+        USER_GID: ${USER_GID:-1000}
+        CLAUDE_CODE_VERSION: ${CLAUDE_CODE_VERSION:-2.1.214}
+    container_name: ai-cli-sandbox
+    restart: "no"
+    stdin_open: true
+    tty: true
+    user: "${USER_UID:-1000}:${USER_GID:-1000}"
+    environment:
+      - USER_UID=${USER_UID:-1000}
+      - USER_GID=${USER_GID:-1000}
+      - HOME=/home/node
+    volumes:
+      - ../../shared/workspace:/workspace
+      - ../../shared/claude:/home/node/.config/claude-code
+      - ../../shared/antigravity:/home/node/.config/antigravity
+      - ../../shared/npm:/home/node/.npm
+      - ../../shared/cache:/home/node/.cache
+      - ../../shared/ssh:/home/node/.ssh:ro
+    working_dir: /workspace
