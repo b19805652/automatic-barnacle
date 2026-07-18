@@ -44,7 +44,7 @@ services:
     container_name: ai-omniroute
     restart: unless-stopped
     ports:
-      - "${OMNIROUTE_PORT:-8080}:80"
+      - "${OMNIROUTE_PORT:-42000}:80"
     volumes:
       - ${WORKSPACE_PATH:-./shared/workspace}:/workspace
     networks:
@@ -56,7 +56,7 @@ services:
     container_name: ai-opendesign
     restart: unless-stopped
     ports:
-      - "${OPENDESIGN_PORT:-3000}:80"
+      - "${OPENDESIGN_PORT:-43000}:80"
     volumes:
       - ${WORKSPACE_PATH:-./shared/workspace}:/workspace
     networks:
