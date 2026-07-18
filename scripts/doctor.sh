@@ -132,6 +132,46 @@ else
   report_result "Container Tool Check" "WARN" "ai-cli-base container is not running. Run 'make up' to run CLI checks."
 fi
 
+# 7. Check OmniRoute CLI tools status
+if docker compose ps -q omniroute &>/dev/null; then
+  omniroute_status=$(docker inspect -f '{{.State.Status}}' "$(docker compose ps -q omniroute)" 2>/dev/null || echo "stopped")
+  if [ "$omniroute_status" = "running" ]; then
+    if docker compose exec -T omniroute which claude &>/dev/null; then
+      report_result "Claude Code inside OmniRoute" "OK" "OmniRoute can locate claude."
+    else
+      report_result "Claude Code inside OmniRoute" "FAIL" "OmniRoute cannot locate claude."
+    fi
+    if docker compose exec -T omniroute which agy &>/dev/null; then
+      report_result "Antigravity CLI inside OmniRoute" "OK" "OmniRoute can locate agy."
+    else
+      report_result "Antigravity CLI inside OmniRoute" "FAIL" "OmniRoute cannot locate agy."
+    fi
+  else
+    report_result "OmniRoute Tool Check" "WARN" "omniroute container is not running."
+  fi
+else
+  report_result "OmniRoute Tool Check" "WARN" "omniroute container is not defined."
+fi
+
+# 8. Check OpenDesign CLI tools status
+if docker compose ps -q opendesign &>/dev/null; then
+  opendesign_status=$(docker inspect -f '{{.State.Status}}' "$(docker compose ps -q opendesign)" 2>/dev/null || echo "stopped")
+  if [ "$opendesign_status" = "running" ]; then
+    if docker compose exec -T opendesign which claude &>/dev/null; then
+      report_result "Claude Code inside OpenDesign" "OK" "OpenDesign can locate claude."
+    else
+      report_result "Claude Code inside OpenDesign" "WARN" "OpenDesign stub container cannot locate claude (Milestone 5 wrapper pending)."
+    fi
+    if docker compose exec -T opendesign which agy &>/dev/null; then
+      report_result "Antigravity CLI inside OpenDesign" "OK" "OpenDesign can locate agy."
+    else
+      report_result "Antigravity CLI inside OpenDesign" "WARN" "OpenDesign stub container cannot locate agy (Milestone 5 wrapper pending)."
+    fi
+  else
+    report_result "OpenDesign Tool Check" "WARN" "opendesign container is not running."
+  fi
+fi
+
 # Summary
 echo -e "\n${BLUE}=== Diagnostics Summary ===${NC}"
 echo -e "Errors detected:   ${errors}"

@@ -39,15 +39,28 @@ services:
       retries: 3
       start_period: 5s
 
-  # OmniRoute Wrapper Stub (Milestone 4 placeholder)
+  # OmniRoute Wrapper Service (Milestone 4)
   omniroute:
-    image: nginx:alpine
+    build:
+      context: ./omniroute
+      dockerfile: Dockerfile
+      network: host
     container_name: ai-omniroute
     restart: unless-stopped
     ports:
-      - "${OMNIROUTE_PORT:-42000}:80"
+      - "${OMNIROUTE_PORT:-42000}:20128"
+    environment:
+      - PORT=20128
+      - HOME=/home/node
     volumes:
+      # Developer workspace
       - ${WORKSPACE_PATH:-./shared/workspace}:/workspace
+      # Shared authentication stores
+      - ${CLAUDE_CONFIG_PATH:-./shared/claude}:/home/node/.claude
+      - ${ANTIGRAVITY_CONFIG_PATH:-./shared/antigravity}:/home/node/.config/antigravity
+      # Cache and package stores to avoid re-downloads
+      - ${NPM_CACHE_PATH:-./shared/npm}:/home/node/.npm
+      - ${GENERAL_CACHE_PATH:-./shared/cache}:/home/node/.cache
     networks:
       - ai-platform-net
 
